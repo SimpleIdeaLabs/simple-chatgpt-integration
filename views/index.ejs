@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Use</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/typed.js@2.0.15/dist/typed.umd.js"></script>
+</head>
+
+<body>
+    <h5>TOC Section</h5>
+    <textarea id="prompt" rows="10" cols="20" style="width: 400px;">
+
+    </textarea>
+    <br />
+    <button type="button" id="btnExplain">Explain</button>
+    <hr />
+    <div id="openAiResponse">
+
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(() => {
+            const btnExplain = $("#btnExplain");
+            btnExplain.on('click', () => {
+                const prompt = $('#prompt').val();
+                $.ajax({
+                    url: "http://localhost:5000/api/explain",
+                    method: "POST",
+                    data: JSON.stringify({
+                        prompt
+                    }),
+                    contentType: "application/json",
+                    success: function(data) {
+                        const aiResponse = data.choices[0].text;
+                        const aiHtml = aiResponse.split('\n').map(s => `${s.trim()}`);
+                        var typed = new Typed('#openAiResponse', {
+                            strings: [aiHtml.join('<br/>')],
+                            typeSpeed: 20,
+                        });
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        alert('Error on explaining TOC Section.')
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
